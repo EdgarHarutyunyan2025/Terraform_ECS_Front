@@ -43,3 +43,4 @@ container_cpu            = 512
 container_memory         = 1024
 essential                = true
 container_port           = 80
+log_name                 = "front"

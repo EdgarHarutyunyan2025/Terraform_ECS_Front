@@ -26,6 +26,8 @@ module "front_sg" {
 
 module "role_s3" {
   source = "../modules/role_front"
+
+  log_name = var.log_name
 }
 
 module "aws_ecs_cluster" {
@@ -63,6 +65,7 @@ module "task_definition_front" {
   cpu                      = var.cpu
   memory                   = var.memory
   execution_role_arn       = module.role_s3.s3full_arn
+  task_role_arn            = module.role_s3.s3full_arn
 
   container_name   = var.front_container_name
   container_image  = module.ecr_front.repository_url
@@ -71,6 +74,8 @@ module "task_definition_front" {
   essential        = var.essential
   container_port   = var.container_port
   host_port        = var.container_port
+
+  log_name = "front"
 
 
   depends_on = [module.ecr_front, module.aws_ecs_cluster]
@@ -103,6 +108,11 @@ module "aws_alb" {
 module "autoscaling_group_front" {
   source       = "../modules/autoscaling_group"
   resource_id  = "service/${module.aws_ecs_cluster.ecs_cluster_name}/${module.aws_ecs_service_front.ecs_service_name}"
-  max_capacity = 5
-  min_capacity = 2
+  max_capacity = 1
+  min_capacity = 1
+}
+
+
+resource "aws_cloudwatch_log_group" "ecs_logs" {
+  name = var.log_name
 }

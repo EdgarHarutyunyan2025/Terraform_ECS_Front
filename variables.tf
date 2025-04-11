@@ -134,3 +134,7 @@ variable "essential" {
 variable "container_port" {
   default = 80
 }
+
+variable "log_name" {
+  default = "front"
+}
