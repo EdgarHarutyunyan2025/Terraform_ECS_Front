@@ -18,12 +18,12 @@ terraform {
 }
 
 
-#data "terraform_remote_state" "back" {
-#  backend = "s3"
-#
-#  config = {
-#    bucket = "task-project-01"
-#    key    = "back/terraform.tfstate"
-#    region = "eu-central-1"
-#  }
-#}
+data "terraform_remote_state" "back" {
+  backend = "s3"
+
+  config = {
+    bucket = "task-project-01"
+    key    = "back/terraform.tfstate"
+    region = "eu-central-1"
+  }
+}

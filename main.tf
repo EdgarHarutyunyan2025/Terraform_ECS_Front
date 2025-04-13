@@ -1,24 +1,28 @@
-provider "aws" {
-  region = "eu-central-1"
+resource "aws_s3_bucket" "web_files" {
+  bucket = var.s3_name
 }
 
-module "vpc-main" {
-  source              = "../modules/vpc"
-  vpc_name            = "front-VPC"
-  vpc_cidr            = var.main_vpc
-  public_subnet_cidrs = var.main_public_subnet
+resource "aws_s3_object" "index_file" {
+  bucket = aws_s3_bucket.web_files.id
+  key    = "index.html"
+  source = "./web_server/index.html"
+  acl    = "private"
 }
+
+
+
+#=================================================================
 
 module "ecr_front" {
   source       = "../modules/ecr"
   ecr_name     = "my_front_ecr"
-  docker-image = "ecr"
+  docker-image = "front-list-httpd1"
 }
 
 module "front_sg" {
   source      = "../modules/sg"
   allow_ports = var.allow_ports
-  vpc_id      = module.vpc-main.main_vpc_id
+  vpc_id      = data.terraform_remote_state.back.outputs.MAIN_VPC_ID
 
   sg_name  = var.sg_name
   sg_owner = var.sg_owner
@@ -30,29 +34,22 @@ module "role_s3" {
   log_name = var.log_name
 }
 
-module "aws_ecs_cluster" {
-  source      = "../modules/ecs_cluster"
-  cluser_name = "Fargate-Cluster"
-}
-
-
 #========= ECS SERVICE ===========
 
 module "aws_ecs_service_front" {
   source                  = "../modules/ecs_sevice"
-  cluser_name             = module.aws_ecs_cluster.ecs_cluster_name
+  cluser_name             = data.terraform_remote_state.back.outputs.MAIN_CLUSTER_NAME
   service_name            = "Front-Service"
-  cluster_id              = module.aws_ecs_cluster.ecs_cluster_id
+  cluster_id              = data.terraform_remote_state.back.outputs.MAIN_CLUSTER_ID
   task_definition_id      = module.task_definition_front.task_definition_id
   launch_type             = var.launch_type
-  service_subnets         = [module.vpc-main.public_subnet_ids[0]]
+  service_subnets         = data.terraform_remote_state.back.outputs.MAIN_VPC_SUBNET_IDS
   service_security_groups = [module.front_sg.sg_id]
 
   target_group_arn = module.aws_alb.alb_tg_arn
   container_name   = var.front_container_name
   container_port   = var.container_port
 
-  depends_on = [module.aws_ecs_cluster]
 }
 
 #========= Task Definition ===========
@@ -74,11 +71,14 @@ module "task_definition_front" {
   essential        = var.essential
   container_port   = var.container_port
   host_port        = var.container_port
+  #task_command     = ["sh", "-c", "echo 'hello world' > /usr/local/apache2/htdocs/index.html && httpd -D FOREGROUND"]
+  task_command = ["sh", "-c", " aws s3 cp s3://${var.s3_name}/index.html /usr/local/apache2/htdocs/index.html && httpd -D FOREGROUND"]
+
 
   log_name = "front"
 
 
-  depends_on = [module.ecr_front, module.aws_ecs_cluster]
+  depends_on = [module.ecr_front]
 }
 
 module "aws_alb" {
@@ -87,13 +87,13 @@ module "aws_alb" {
   internal                   = var.internal
   load_balancer_type         = var.load_balancer_type
   security_groups            = [module.front_sg.sg_id]
-  subnets                    = module.vpc-main.public_subnet_ids
+  subnets                    = data.terraform_remote_state.back.outputs.MAIN_VPC_SUBNET_IDS
   enable_deletion_protection = var.enable_deletion_protection
 
   tg_name     = var.tg_name
   tg_port     = var.tg_port
   tg_protocol = var.tg_protocol
-  vpc_id      = module.vpc-main.main_vpc_id
+  vpc_id      = data.terraform_remote_state.back.outputs.MAIN_VPC_ID
 
   health_check_path     = var.health_check_path
   health_check_protocol = var.health_check_protocol
@@ -107,7 +107,7 @@ module "aws_alb" {
 
 module "autoscaling_group_front" {
   source       = "../modules/autoscaling_group"
-  resource_id  = "service/${module.aws_ecs_cluster.ecs_cluster_name}/${module.aws_ecs_service_front.ecs_service_name}"
+  resource_id  = "service/${data.terraform_remote_state.back.outputs.MAIN_CLUSTER_NAME}/${module.aws_ecs_service_front.ecs_service_name}"
   max_capacity = 1
   min_capacity = 1
 }

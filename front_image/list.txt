@@ -1,0 +1,2 @@
+aws s3 cp s3://front-test4444/index.html /usr/local/apache2/htdocs/index.html
+

@@ -40,7 +40,7 @@ variable "launch_type" {
 #============ ALB VARS ==============
 
 variable "lb_name" {
-  default = "my-alb"
+  default = "FRONT-ALB"
 }
 
 variable "internal" {
@@ -56,7 +56,7 @@ variable "enable_deletion_protection" {
 }
 
 variable "tg_name" {
-  default = "my-tg"
+  default = "FRONT-TG"
 }
 
 variable "tg_port" {
@@ -137,4 +137,8 @@ variable "container_port" {
 
 variable "log_name" {
   default = "front"
+}
+
+variable "s3_name" {
+  default = "frontend-test111-bucket"
 }
