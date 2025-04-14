@@ -1,3 +1,5 @@
+#TEST DEV
+
 resource "aws_s3_bucket" "web_files" {
   bucket = var.s3_name
 }
