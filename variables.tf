@@ -142,3 +142,7 @@ variable "log_name" {
 variable "s3_name" {
   default = "frontend-test111-bucket"
 }
+
+variable "docker_image" {
+  default = ""
+}
