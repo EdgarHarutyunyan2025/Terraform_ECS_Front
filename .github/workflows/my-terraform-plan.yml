@@ -40,6 +40,9 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Terraform refresh
+        run: terraform refresh
+
       - name: Terraform Plan (pass docker image)
         run: terraform plan  -no-color -var="docker_image=${{ steps.docker.outputs.image_tag }}" > front-plan.txt
 
