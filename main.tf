@@ -14,13 +14,15 @@ resource "aws_s3_object" "index_file" {
 #=================================================================
 
 module "ecr_front" {
-  source       = "../modules/ecr"
+  #source       = "../modules/ecr"
+  source       = "git::https://github.com/EdgarHarutyunyan2025/Terraform_ECS_Modules.git//ecr"
   ecr_name     = "my_front_ecr"
   docker-image = "front-list-httpd1"
 }
 
 module "front_sg" {
-  source      = "../modules/sg"
+  #source      = "../modules/sg"
+  source      = "git::https://github.com/EdgarHarutyunyan2025/Terraform_ECS_Modules.git//sg"
   allow_ports = var.allow_ports
   vpc_id      = data.terraform_remote_state.back.outputs.MAIN_VPC_ID
 
@@ -29,7 +31,8 @@ module "front_sg" {
 }
 
 module "role_s3" {
-  source = "../modules/role_front"
+  #source = "../modules/role_front"
+  source = "git::https://github.com/EdgarHarutyunyan2025/Terraform_ECS_Modules.git//role_front"
 
   log_name = var.log_name
 }
@@ -37,7 +40,8 @@ module "role_s3" {
 #========= ECS SERVICE ===========
 
 module "aws_ecs_service_front" {
-  source                  = "../modules/ecs_sevice"
+  #source                  = "../modules/ecs_sevice"
+  source                  = "git::https://github.com/EdgarHarutyunyan2025/Terraform_ECS_Modules.git//ecs_sevice"
   cluser_name             = data.terraform_remote_state.back.outputs.MAIN_CLUSTER_NAME
   service_name            = "Front-Service"
   cluster_id              = data.terraform_remote_state.back.outputs.MAIN_CLUSTER_ID
@@ -55,7 +59,8 @@ module "aws_ecs_service_front" {
 #========= Task Definition ===========
 
 module "task_definition_front" {
-  source                   = "../modules/task_definition"
+  #source                   = "../modules/task_definition"
+  source                   = "git::https://github.com/EdgarHarutyunyan2025/Terraform_ECS_Modules.git//task_definition"
   family                   = "front"
   network_mode             = var.network_mode
   requires_compatibilities = var.requires_compatibilities
@@ -82,7 +87,8 @@ module "task_definition_front" {
 }
 
 module "aws_alb" {
-  source                     = "../modules/load_balancer"
+  #source                     = "../modules/load_balancer"
+  source                     = "git::https://github.com/EdgarHarutyunyan2025/Terraform_ECS_Modules.git//load_balancer"
   lb_name                    = var.lb_name
   internal                   = var.internal
   load_balancer_type         = var.load_balancer_type
@@ -106,7 +112,8 @@ module "aws_alb" {
 
 
 module "autoscaling_group_front" {
-  source       = "../modules/autoscaling_group"
+  #source       = "../modules/autoscaling_group"
+  source       = "git::https://github.com/EdgarHarutyunyan2025/Terraform_ECS_Modules.git//autoscaling_group"
   resource_id  = "service/${data.terraform_remote_state.back.outputs.MAIN_CLUSTER_NAME}/${module.aws_ecs_service_front.ecs_service_name}"
   max_capacity = 1
   min_capacity = 1
