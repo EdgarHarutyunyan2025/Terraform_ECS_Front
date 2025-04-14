@@ -19,7 +19,7 @@ module "ecr_front" {
   #source       = "../modules/ecr"
   source       = "git::https://github.com/EdgarHarutyunyan2025/Terraform_ECS_Modules.git//ecr"
   ecr_name     = "my_front_ecr"
-  docker-image = "front-list-httpd1"
+  docker-image = var.docker_image
 }
 
 module "front_sg" {

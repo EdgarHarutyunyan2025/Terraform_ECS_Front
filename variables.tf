@@ -25,6 +25,11 @@ variable "allow_ports" {
 
 #============ ECS VARS ==============
 
+
+variable "docker_image" {
+  default = ""
+}
+
 variable "cluser_name" {
   default = "fargate_cluster"
 }
@@ -143,6 +148,3 @@ variable "s3_name" {
   default = "frontend-test111-bucket"
 }
 
-variable "docker_image" {
-  default = ""
-}
