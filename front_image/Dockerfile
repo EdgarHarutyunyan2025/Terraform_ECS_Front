@@ -10,10 +10,10 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     unzip awscliv2.zip 
 
 RUN ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update && \
-    /usr/local/bin/aws --version && \
+    /usr/local/bin/aws --version 
 
 RUN rm -f awscliv2.zip && rm -rf aws && \
-    /usr/local/bin/aws --version && \
+    /usr/local/bin/aws --version
 
 COPY ./index.html /usr/local/apache2/htdocs/
 
