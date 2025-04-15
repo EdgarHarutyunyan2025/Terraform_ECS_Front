@@ -64,7 +64,7 @@ jobs:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           document: front-plan.txt
-          caption: "✅ Terraform plan was successful for frontend."
+          message: "✅ Terraform plan was successful for frontend."
 
 
       - name: Send Telegram message
