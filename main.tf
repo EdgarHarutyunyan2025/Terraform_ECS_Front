@@ -1,4 +1,4 @@
-#TEST DEV
+#========= S3 ===========
 
 resource "aws_s3_bucket" "web_files" {
   bucket = var.s3_name
@@ -12,8 +12,7 @@ resource "aws_s3_object" "index_file" {
 }
 
 
-
-#=================================================================
+#======== ECR ===========
 
 module "ecr_front" {
   source       = "git::https://github.com/EdgarHarutyunyan2025/Terraform_ECS_Modules.git//ecr"
@@ -26,6 +25,8 @@ module "ecr_front" {
   lifecycle_count_number = 1
 }
 
+#========= SG ===========
+
 module "front_sg" {
   #source      = "../modules/sg"
   source      = "git::https://github.com/EdgarHarutyunyan2025/Terraform_ECS_Modules.git//sg"
@@ -35,6 +36,8 @@ module "front_sg" {
   sg_name  = var.sg_name
   sg_owner = var.sg_owner
 }
+
+#========= S3 ROLE ===========
 
 module "role_s3" {
   #source = "../modules/role_front"
@@ -91,6 +94,8 @@ module "task_definition_front" {
 
   depends_on = [module.ecr_front]
 }
+
+#========= ALB ===========
 
 module "aws_alb" {
   #source                     = "../modules/load_balancer"
