@@ -41,6 +41,7 @@ jobs:
         run: terraform init
 
       - name: Terraform refresh
+        id: refresh
         run: terraform refresh
 
       - name: Terraform Plan 
@@ -49,14 +50,14 @@ jobs:
         continue-on-error: true
 
       - name: Upload Terraform Plan
-        if: steps.plan.outcome == 'success'
+        if: steps.refresh.outcome == 'success' && steps.plan.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: terraform-plan
           path: front-plan.txt
 
       - name: Send plan to Telegram (as file)
-        if: steps.plan.outcome == 'success'
+        if: steps.refresh.outcome == 'success' && steps.plan.outcome == 'success'
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -66,7 +67,7 @@ jobs:
 
 
       - name: Send Telegram message
-        if: steps.plan.outcome != 'success'
+        if: steps.refresh.outcome != 'success' || steps.plan.outcome != 'success'
         uses: appleboy/telegram-action@master
         with: 
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
