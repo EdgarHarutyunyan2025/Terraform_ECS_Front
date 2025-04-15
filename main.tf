@@ -16,10 +16,14 @@ resource "aws_s3_object" "index_file" {
 #=================================================================
 
 module "ecr_front" {
-  #source       = "../modules/ecr"
   source       = "git::https://github.com/EdgarHarutyunyan2025/Terraform_ECS_Modules.git//ecr"
   ecr_name     = "my_front_ecr"
   docker-image = var.docker_image
+
+  lifecycle_description  = "Delete untagged images older than 1 day"
+  lifecycle_tag_status   = "untagged"
+  lifecycle_count_type   = "sinceImagePushed"
+  lifecycle_count_number = 1
 }
 
 module "front_sg" {
