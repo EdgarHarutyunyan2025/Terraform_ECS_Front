@@ -54,7 +54,7 @@ jobs:
         run: |
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
             -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-            -d text="✅ Terraform Apply успешно завершён в ветке *main*." \
+            -d text="✅ Terraform Apply Front Success " \
             -d parse_mode=Markdown
 
 
