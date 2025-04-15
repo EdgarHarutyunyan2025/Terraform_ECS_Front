@@ -43,6 +43,7 @@ jobs:
       - name: Terraform refresh
         id: refresh
         run: terraform refresh
+        continue-on-error: true
 
       - name: Terraform Plan 
         id: plan
