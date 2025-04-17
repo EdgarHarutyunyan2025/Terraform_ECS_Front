@@ -6,7 +6,6 @@ on:
 
 jobs:
   terraform-apply:
-    if: github.event.pull_request.merged == true 
     name: Terraform Apply
     runs-on: ubuntu-latest
 
