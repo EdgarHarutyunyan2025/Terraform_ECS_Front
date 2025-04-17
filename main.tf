@@ -28,7 +28,6 @@ module "ecr_front" {
 #========= SG ===========
 
 module "front_sg" {
-  #source      = "../modules/sg"
   source      = "git::https://github.com/EdgarHarutyunyan2025/Terraform_ECS_Modules.git//sg"
   allow_ports = var.allow_ports
   vpc_id      = data.terraform_remote_state.back.outputs.MAIN_VPC_ID
