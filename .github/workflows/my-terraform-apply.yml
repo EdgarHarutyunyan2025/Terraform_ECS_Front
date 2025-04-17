@@ -1,10 +1,8 @@
 name: Terraform Apply on PR merge to main
 
 on:
-  pull_request:
-    types: [closed]
-    branches:
-      - main  
+  release:
+    types: [edited]
 
 jobs:
   terraform-apply:
