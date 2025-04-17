@@ -21,7 +21,7 @@ jobs:
       - name: Build Docker image
         id: docker
         run: |
-          IMAGE_TAG=front-pr-${{ github.event.pull_request.number }}
+          IMAGE_TAG=front-image
           cd front_image && docker build -t $IMAGE_TAG .
           echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
 
