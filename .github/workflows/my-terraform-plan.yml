@@ -74,7 +74,7 @@ jobs:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           document: front-plan.txt
-          message: "✅ Terraform plan was successful for frontend."
+          message: "✅ Terraform plan was successful for Opened PR in Frontend."
 
 
       - name: Send Telegram message
@@ -83,4 +83,4 @@ jobs:
         with: 
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          message: "❌ Terraform plan failed for frontend. Please check the GitHub Actions logs."
+          message: "❌ Terraform plan failed for Opened PR in Frontend. Please check the GitHub Actions logs."
