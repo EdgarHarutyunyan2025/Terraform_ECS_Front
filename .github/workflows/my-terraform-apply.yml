@@ -58,7 +58,7 @@ jobs:
           #
           #
       - name: Send plan to Telegram (as file)
-        if: steps.Apply.outcome == 'success' &&
+        if: steps.Apply.outcome == 'success' 
         uses: appleboy/telegram-action@master
         with:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
