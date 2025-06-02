@@ -84,8 +84,7 @@ module "task_definition_front" {
   essential        = var.essential
   container_port   = var.container_port
   host_port        = var.container_port
-  #task_command     = ["sh", "-c", "echo 'hello world' > /usr/local/apache2/htdocs/index.html && httpd -D FOREGROUND"]
-  task_command = ["sh", "-c", " aws s3 cp s3://${var.s3_name}/index.html /usr/local/apache2/htdocs/index.html && httpd -D FOREGROUND"]
+  task_command     = ["sh", "-c", " aws s3 cp s3://${var.s3_name}/index.html /usr/local/apache2/htdocs/index.html && httpd -D FOREGROUND"]
 
 
   log_name = "front"
@@ -97,7 +96,6 @@ module "task_definition_front" {
 #========= ALB ===========
 
 module "aws_alb" {
-  #source                     = "../modules/load_balancer"
   source                     = "git::https://github.com/EdgarHarutyunyan2025/Terraform_ECS_Modules.git//load_balancer"
   lb_name                    = var.lb_name
   internal                   = var.internal
@@ -122,7 +120,6 @@ module "aws_alb" {
 
 
 module "autoscaling_group_front" {
-  #source       = "../modules/autoscaling_group"
   source       = "git::https://github.com/EdgarHarutyunyan2025/Terraform_ECS_Modules.git//autoscaling_group"
   resource_id  = "service/${data.terraform_remote_state.back.outputs.MAIN_CLUSTER_NAME}/${module.aws_ecs_service_front.ecs_service_name}"
   max_capacity = 1
